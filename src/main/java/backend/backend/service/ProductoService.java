@@ -71,6 +71,7 @@ public class ProductoService {
                     producto.setStock(dto.getStock());
                     producto.setCategoria(dto.getCategoria());
                     producto.setActivo(dto.getActivo());
+                    producto.setImagenUrl(dto.getImagenUrl());
                     Producto actualizado = productoRepository.save(producto);
                     return convertToDTO(actualizado);
                 })
@@ -106,7 +107,8 @@ public class ProductoService {
                 producto.getPrecio(),
                 producto.getStock(),
                 producto.getCategoria(),
-                producto.getActivo()
+                producto.getActivo(),
+                producto.getImagenUrl()
         );
     }
 
@@ -119,7 +121,8 @@ public class ProductoService {
                 dto.getPrecio(),
                 dto.getStock(),
                 dto.getCategoria(),
-                dto.getActivo() != null ? dto.getActivo() : true
+                dto.getActivo() != null ? dto.getActivo() : true,
+                dto.getImagenUrl()
         );
     }
 }

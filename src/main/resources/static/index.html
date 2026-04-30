@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHALOM PAPELERIA | Tu papelería de confianza</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Header -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <span><i class="fas fa-truck"></i> Envío gratis en pedidos superiores a $50.000</span>
+            <div class="top-links">
+                <a href="#"><i class="fas fa-map-marker-alt"></i> Calle 51 #27-27</a>
+                <a href="#"><i class="fas fa-phone-alt"></i> 3043695254</a>
+                <a href="mailto:contacto@premium.com"><i class="fas fa-envelope"></i> contacto@tauropremium.com</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo" onclick="cargarTodosLosProductos()">
+                <i class="fas fa-book-open text-primary"></i> SHALOM<span class="text-primary"> PAPELERÍA</span>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="¿Qué estás buscando hoy? (Ej: Cuadernos, Lápices...)">
+                <button onclick="buscarProductos()"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="header-actions">
+                <div class="action-item" onclick="window.location.href='login.html'">
+                    <i class="fas fa-user-shield text-primary"></i>
+                    <div class="action-text">
+                        <span>Hola, Admin</span>
+                        <strong>Iniciar Sesión</strong>
+                    </div>
+                </div>
+                <div class="action-item cart-icon" onclick="toggleCart()">
+                    <div class="cart-badge" id="cart-count">0</div>
+                    <i class="fas fa-shopping-cart"></i>
+                    <div class="action-text">
+                        <span>Mi Carrito</span>
+                        <strong id="cart-total-header">$0.00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container" id="category-nav">
+            <a href="#" onclick="cargarTodosLosProductos()"><i class="fas fa-bars"></i> Todos los Productos</a>
+            <!-- Las categorías se insertarán aquí dinámicamente -->
+        </div>
+    </nav>
+
+    <main class="store-container">
+        <!-- Hero Banner -->
+        <div class="hero-banner" id="hero-banner">
+            <div class="hero-content">
+                <h2>¡Especial Regreso a Clases!</h2>
+                <p>Hasta 30% de descuento en útiles escolares seleccionados.</p>
+                <button class="btn-hero"
+                    onclick="document.getElementById('products-grid').scrollIntoView({behavior: 'smooth'})">Ver
+                    Ofertas</button>
+            </div>
+        </div>
+
+        <div class="store-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="filter-section">
+                    <h3>Categorías</h3>
+                    <ul class="category-list" id="sidebar-categories">
+                        <!-- Categorías dinámicas -->
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Product Grid -->
+            <section class="products-section">
+                <div class="section-header">
+                    <h2 id="section-title">Todos los Productos</h2>
+                    <div class="sort-by">
+                        <label>Ordenar por:</label>
+                        <select id="sort-select" onchange="ordenarProductos()">
+                            <option value="relevance">Relevancia</option>
+                            <option value="price-asc">Precio: Menor a Mayor</option>
+                            <option value="price-desc">Precio: Mayor a Menor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                    <i class="fas fa-circle-notch fa-spin"></i> Cargando productos...
+                </div>
+
+                <div id="products-grid" class="products-grid">
+                    <!-- Productos cargados dinámicamente -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo">SHALOM<span class="text-primary"> PAPELERÍA</span></div>
+                <p>Tu papelería de confianza con los mejores precios y el catálogo más extenso para oficina, arte y
+                    escuela.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Atención al Cliente</h3>
+                <ul>
+                    <li><a href="#">Centro de Ayuda</a></li>
+                    <li><a href="#">Envíos y Devoluciones</a></li>
+                    <li><a href="#">Garantías</a></li>
+                    <li><a href="#">Facturación Electrónica</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <ul>
+                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-map-marker-alt"></i> Calle 51 #27-27</li>
+                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-phone-alt"></i> 3043695254</li>
+                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-envelope"></i> contacto@tauropremium.com</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Boletín</h3>
+                <p>Suscríbete para recibir ofertas exclusivas.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Tu correo electrónico">
+                    <button>Suscribir</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SHALOM PAPELERÍA. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2><i class="fas fa-shopping-cart"></i> Tu Carrito</h2>
+            <button class="close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <!-- Items del carrito -->
+        </div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total:</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="realizarCompra()">Procesar Pago <i
+                    class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    <div id="overlay" class="overlay" onclick="toggleCart()"></div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
