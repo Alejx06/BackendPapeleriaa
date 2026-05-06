@@ -66,7 +66,22 @@ public class PedidoService {
 
         pedido.setItems(items);
         pedido.setTotal(totalGeneral);
+        pedido.setClienteNombre(request.getClienteNombre());
+        pedido.setClienteEmail(request.getClienteEmail());
+        pedido.setMetodoPago(request.getMetodoPago());
+        pedido.setDireccionEnvio(request.getDireccionEnvio());
 
         return pedidoRepository.save(pedido);
+    }
+
+    public List<Pedido> obtenerTodos() {
+        return pedidoRepository.findAll();
+    }
+
+    public List<Pedido> obtenerPorFecha(LocalDateTime inicio, LocalDateTime fin) {
+        // Implement logic to filter by date range
+        return pedidoRepository.findAll().stream()
+                .filter(p -> p.getFechaPedido().isAfter(inicio) && p.getFechaPedido().isBefore(fin))
+                .toList();
     }
 }

@@ -1,19 +1,50 @@
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const user = document.getElementById('username').value.trim();
     const pass = document.getElementById('password').value.trim();
     
-    // Credenciales dadas por el usuario
+    // 1. Verificar si es Administrador (Hardcoded como estaba antes)
     if (user === 'SHALOM' && pass === 'Familia123') {
-        // Guardar llave de sesión
         sessionStorage.setItem('adminAuth', 'true');
-        showToast('Acceso concedido', 'success');
+        showToast('Acceso concedido como Administrador', 'success');
         setTimeout(() => {
             window.location.href = 'admin.html';
         }, 800);
-    } else {
-        showToast('Usuario o contraseña incorrectos', 'error');
+        return;
+    }
+
+    // 2. Intentar Login como Usuario (Cliente) en la DB
+    try {
+        const response = await fetch('http://localhost:8080/api/usuarios/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: user, // El input 'username' se usa como email para usuarios
+                password: pass
+            })
+        });
+
+        if (response.ok) {
+            const usuarioData = await response.json();
+            // Guardar sesión de usuario
+            sessionStorage.setItem('userAuth', 'true');
+            sessionStorage.setItem('userName', usuarioData.nombre);
+            sessionStorage.setItem('userEmail', usuarioData.email);
+            
+            showToast(`Bienvenido de nuevo, ${usuarioData.nombre}`, 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        } else {
+            const errorMsg = await response.text();
+            showToast(errorMsg || 'Credenciales inválidas', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Error de conexión o usuario no encontrado', 'error');
     }
 });
 

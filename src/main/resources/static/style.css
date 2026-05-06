@@ -12,6 +12,70 @@
     --warning: #f57c00;
 }
 
+body.dark-mode {
+    --bg: #121212;
+    --surface: #1e1e1e;
+    --text-main: #f0f0f0;
+    --text-muted: #a0a0a0;
+    --border: #333333;
+    --primary: #ff5252;
+    --primary-hover: #ff1744;
+    --secondary: #64b5f6;
+}
+
+body.dark-mode .top-bar {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .search-bar input {
+    background-color: #2a2a2a;
+    color: white;
+}
+
+body.dark-mode .product-image {
+    background-color: #252525;
+}
+
+body.dark-mode .cart-item-controls {
+    background-color: #2a2a2a;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+body.dark-mode .btn-cancelar {
+    background: #2a2a2a;
+    color: #a0a0a0;
+    border-color: #444;
+}
+
+body.dark-mode input, 
+body.dark-mode select, 
+body.dark-mode textarea {
+    background-color: #2a2a2a;
+    color: white;
+    border-color: #444;
+}
+
+body.dark-mode .hero-banner {
+    background: linear-gradient(135deg, #1a237e 0%, #000000 100%);
+}
+
+body.dark-mode .main-footer {
+    background: #0a0a0a;
+}
+
+body.dark-mode .footer-bottom {
+    background: #000;
+}
+
+body.dark-mode .newsletter-form input {
+    background-color: #333;
+    color: white;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -20,9 +84,71 @@
 }
 
 body {
-    background-color: var(--bg);
+    background: var(--bg);
     color: var(--text-main);
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Elegant Background Effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(211, 47, 47, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(25, 118, 210, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 50% 20%, rgba(255, 235, 59, 0.05) 0%, transparent 30%),
+        #f8f9fa;
+    z-index: -1;
+    animation: moveBG 20s ease-in-out infinite alternate;
+}
+
+@keyframes moveBG {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+body.dark-mode::before {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 82, 82, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(100, 181, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 20%, rgba(255, 235, 59, 0.05) 0%, transparent 30%),
+        #0a0a0a;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm-45 46c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm57 31c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zM27 44c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm44 45c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z' fill='%23d32f2f' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E");
+    z-index: -1;
+    pointer-events: none;
+}
+
+body.dark-mode::after {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm-45 46c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm57 31c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zM27 44c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm44 45c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.sidebar, .product-card, .admin-container, .modal-content {
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .sidebar, 
+body.dark-mode .product-card, 
+body.dark-mode .admin-container,
+body.dark-mode .modal-content {
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .text-primary { color: var(--primary); }
@@ -58,6 +184,14 @@ body {
 .admin-link {
     font-weight: bold;
     color: var(--primary) !important;
+}
+
+.theme-toggle:hover {
+    filter: brightness(0.9);
+    transform: scale(1.05);
+}
+body.dark-mode .theme-toggle {
+    background: #444 !important;
 }
 
 /* Main Header */
@@ -348,19 +482,20 @@ body {
 
 .product-card {
     background: var(--surface);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    border: 1px solid var(--border);
 }
 
 .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .product-image {

@@ -6,4 +6,8 @@ import java.util.List;
 @Data
 public class PedidoRequestDTO {
     private List<PedidoItemRequestDTO> items;
+    private String clienteNombre;
+    private String clienteEmail;
+    private String metodoPago;
+    private String direccionEnvio;
 }

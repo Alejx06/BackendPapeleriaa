@@ -27,4 +27,24 @@ public class PedidoController {
             return new ResponseEntity<>("Error interno al procesar el pedido", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> obtenerPedidos() {
+        try {
+            return ResponseEntity.ok(pedidoService.obtenerTodos());
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al obtener los pedidos", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/hoy")
+    public ResponseEntity<?> obtenerVentasHoy() {
+        try {
+            java.time.LocalDateTime inicio = java.time.LocalDate.now().atStartOfDay();
+            java.time.LocalDateTime fin = java.time.LocalDate.now().atTime(23, 59, 59);
+            return ResponseEntity.ok(pedidoService.obtenerPorFecha(inicio, fin));
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al obtener ventas del día", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

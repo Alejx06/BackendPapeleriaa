@@ -8,13 +8,71 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.open .modal-content {
+            transform: translateY(0);
+        }
+
+        .btn-cancelar {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancelar:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Top Header -->
     <div class="top-bar">
         <div class="top-bar-content">
-            <span><i class="fas fa-truck"></i> Envío gratis en pedidos superiores a $50.000</span>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <span><i class="fas fa-truck"></i> Envío gratis en pedidos superiores a $50.000</span>
+                <div class="theme-toggle" onclick="toggleTheme()"
+                    style="cursor: pointer; padding: 0.25rem 0.75rem; background: var(--border); border-radius: 20px; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s;">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                    <span id="theme-text" style="font-weight: bold; font-size: 0.75rem;">Modo Oscuro</span>
+                </div>
+            </div>
             <div class="top-links">
                 <a href="#"><i class="fas fa-map-marker-alt"></i> Calle 51 #27-27</a>
                 <a href="#"><i class="fas fa-phone-alt"></i> 3043695254</a>
@@ -36,11 +94,18 @@
             </div>
 
             <div class="header-actions">
-                <div class="action-item" onclick="window.location.href='login.html'">
+                <div class="action-item" id="user-info-section" onclick="window.location.href='login.html'">
                     <i class="fas fa-user-shield text-primary"></i>
                     <div class="action-text">
-                        <span>Hola, Admin</span>
-                        <strong>Iniciar Sesión</strong>
+                        <span id="user-status">Hola, Admin</span>
+                        <strong id="user-action">Iniciar Sesión</strong>
+                    </div>
+                </div>
+                <div class="action-item" id="register-section" onclick="window.location.href='register.html'">
+                    <i class="fas fa-user-plus text-primary"></i>
+                    <div class="action-text">
+                        <span>Nuevo aquí?</span>
+                        <strong>Registrarse</strong>
                     </div>
                 </div>
                 <div class="action-item cart-icon" onclick="toggleCart()">
@@ -169,10 +234,113 @@
                 <span>Total:</span>
                 <span id="cart-total">$0.00</span>
             </div>
-            <button class="checkout-btn" onclick="realizarCompra()">Procesar Pago <i
+            <button class="checkout-btn" onclick="abrirCheckout()">Procesar Pago <i
                     class="fas fa-arrow-right"></i></button>
         </div>
     </div>
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2rem;">
+            <div class="modal-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;"><i class="fas fa-check-circle text-primary"></i> Finalizar Compra</h2>
+                <button class="close-btn" onclick="cerrarCheckout()"
+                    style="background: none; border: none; font-size: 1.5rem; cursor: pointer;"><i
+                        class="fas fa-times"></i></button>
+            </div>
+
+            <form id="checkout-form" onsubmit="realizarCompra(event)">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Dirección de Envío *</label>
+                    <input type="text" id="envio-direccion" placeholder="Calle, Carrera, Barrio, Ciudad" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Método de Pago *</label>
+                    <div class="payment-options" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <label
+                            style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">
+                            <input type="radio" name="metodo-pago" value="TARJETA" checked>
+                            <i class="fas fa-credit-card"></i> Tarjeta de Crédito / Débito
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">
+                            <input type="radio" name="metodo-pago" value="PSE">
+                            <i class="fas fa-university"></i> PSE / Transferencia Bancaria
+                        </label>
+                        <label id="option-contraentrega"
+                            style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">
+                            <input type="radio" name="metodo-pago" value="CONTRAENTREGA">
+                            <i class="fas fa-hand-holding-usd"></i> Pago Contraentrega
+                        </label>
+                        <p id="msg-contraentrega"
+                            style="font-size: 0.8rem; color: var(--danger); margin: 0; display: none;">* Disponible solo
+                            para compras mayores a $25.000</p>
+                    </div>
+                </div>
+
+                <div id="card-details"
+                    style="display: block; margin-bottom: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                    <p style="margin-top: 0; font-weight: bold; font-size: 0.9rem;"><i class="fas fa-credit-card"></i>
+                        Datos de la Tarjeta</p>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <input type="text" placeholder="Número de Tarjeta"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" placeholder="MM/YY"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                        <input type="text" placeholder="CVV"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div id="pse-details"
+                    style="display: none; margin-bottom: 1.5rem; padding: 1rem; background: #f0f7ff; border-radius: 8px; border: 1px solid #cce3ff;">
+                    <p style="margin-top: 0; font-weight: bold; font-size: 0.9rem;"><i class="fas fa-university"></i>
+                        Detalles de PSE</p>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.85rem;">Tipo de Persona</label>
+                        <select style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <option value="natural">Persona Natural</option>
+                            <option value="juridica">Persona Jurídica</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 0.85rem;">Selecciona tu Banco</label>
+                        <select id="banco-select"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <option value="">-- Selecciona un banco --</option>
+                            <option value="bancolombia">Bancolombia</option>
+                            <option value="davivienda">Davivienda</option>
+                            <option value="bogota">Banco de Bogotá</option>
+                            <option value="bbva">BBVA</option>
+                            <option value="nequi">Nequi</option>
+                            <option value="daviplata">DaviPlata</option>
+                            <option value="occidente">Banco de Occidente</option>
+                            <option value="popular">Banco Popular</option>
+                            <option value="itau">Itaú</option>
+                            <option value="scotiabank">Scotiabank Colpatria</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 1.5rem;">
+                        <span>Total a Pagar:</span>
+                        <span id="checkout-total-val">$0.00</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button type="button" class="btn-cancelar" onclick="cancelarCompra()">Cancelar Compra</button>
+                        <button type="submit" class="checkout-btn" id="btn-confirmar-pago">Confirmar y Pagar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="overlay" class="overlay" onclick="toggleCart()"></div>
 
     <!-- Notification Toast -->

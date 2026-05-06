@@ -3,6 +3,35 @@ let productos = [];
 let carrito = [];
 let categorias = [];
 let categoriaActual = null;
+const API_BASE = '/api';
+
+// Theme Management
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        updateThemeUI(true);
+    }
+});
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeUI(isDark);
+}
+
+function updateThemeUI(isDark) {
+    const icon = document.getElementById('theme-icon');
+    const text = document.getElementById('theme-text');
+    if (!icon || !text) return;
+    if (isDark) {
+        icon.className = 'fas fa-sun';
+        text.innerText = 'Modo Claro';
+    } else {
+        icon.className = 'fas fa-moon';
+        text.innerText = 'Modo Oscuro';
+    }
+}
 
 // DOM Elements
 const productsGrid = document.getElementById('products-grid');
@@ -20,17 +49,45 @@ const searchInput = document.getElementById('search-input');
 const sortSelect = document.getElementById('sort-select');
 const loadingSpinner = document.getElementById('loading-spinner');
 
-// API Base URL - ruta relativa, funciona en localhost Y en producción
-const API_BASE = '/api';
-
+// API Base URL - ruta absoluta para que funcione al abrir el archivo directamente o con Live Server
 // Initialize
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    cargarProductos();
+    actualizarCarrito(); // Ensure carrito is initialized if empty
+    verificarSesion();
+});
 
-async function init() {
-    await cargarProductos();
-    extraerCategorias();
-    
-    // Add Enter key event for search
+function verificarSesion() {
+    const userAuth = sessionStorage.getItem('userAuth');
+    const userName = sessionStorage.getItem('userName');
+    const adminAuth = sessionStorage.getItem('adminAuth');
+
+    const userStatus = document.getElementById('user-status');
+    const userAction = document.getElementById('user-action');
+    const userInfoSection = document.getElementById('user-info-section');
+    const registerSection = document.getElementById('register-section');
+
+    if (adminAuth === 'true') {
+        if (userStatus) userStatus.innerText = 'Hola, Admin';
+        if (userAction) userAction.innerText = 'Panel Control';
+        if (userInfoSection) userInfoSection.onclick = () => window.location.href = 'admin.html';
+        if (registerSection) registerSection.style.display = 'none';
+    } else if (userAuth === 'true') {
+        if (userStatus) userStatus.innerText = `Hola, ${userName.split(' ')[0]}`;
+        if (userAction) userAction.innerText = 'Cerrar Sesión';
+        if (userInfoSection) {
+            userInfoSection.onclick = (e) => {
+                e.preventDefault();
+                sessionStorage.clear();
+                window.location.reload();
+            };
+        }
+        if (registerSection) registerSection.style.display = 'none';
+    }
+}
+
+// Add Enter key event for search
+if (searchInput) {
     searchInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             buscarProductos();
@@ -94,11 +151,18 @@ async function buscarProductos() {
 }
 
 function extraerCategorias() {
-    const cats = new Set();
+    const catsMap = new Map(); // Map to store {normalizedName: originalDisplay}
     productosOriginales.forEach(p => {
-        if (p.categoria) cats.add(p.categoria);
+        if (p.categoria && p.categoria.trim() !== '') {
+            const normalized = p.categoria.trim().toLowerCase();
+            // Store the first version we find as the display version (Title Case preferred)
+            if (!catsMap.has(normalized)) {
+                const display = p.categoria.charAt(0).toUpperCase() + p.categoria.slice(1).toLowerCase();
+                catsMap.set(normalized, display);
+            }
+        }
     });
-    categorias = Array.from(cats).sort();
+    categorias = Array.from(catsMap.values()).sort();
     renderCategorias();
 }
 
@@ -299,19 +363,113 @@ function actualizarCarrito() {
     cartTotalHeaderElement.innerText = totalFormatted;
 }
 
-// Checkout
-async function realizarCompra() {
+// UI Helpers
+function toggleCart() {
+    cartSidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+}
+
+function abrirCheckout() {
     if (carrito.length === 0) {
         showToast('El carrito está vacío', 'error');
         return;
     }
+    
+    // Calcular total actual
+    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    document.getElementById('checkout-total-val').innerText = `$${total.toLocaleString('es-CO')}`;
+    
+    // Lógica de Contraentrega (Min $25.000)
+    const optionContra = document.getElementById('option-contraentrega');
+    const msgContra = document.getElementById('msg-contraentrega');
+    const radioContra = document.querySelector('input[name="metodo-pago"][value="CONTRAENTREGA"]');
+    
+    if (total < 25000) {
+        optionContra.style.opacity = '0.5';
+        optionContra.style.pointerEvents = 'none';
+        msgContra.style.display = 'block';
+        if (radioContra.checked) {
+            document.querySelector('input[name="metodo-pago"][value="TARJETA"]').checked = true;
+            togglePaymentDetails(); // Asegurar que se vean los detalles de tarjeta
+        }
+    } else {
+        optionContra.style.opacity = '1';
+        optionContra.style.pointerEvents = 'auto';
+        msgContra.style.display = 'none';
+    }
+    
+    toggleCart(); // Cerrar carrito
+    document.getElementById('checkout-modal').classList.add('open');
+    
+    // Añadir listeners a los radios si no los tienen
+    setupPaymentListeners();
+}
 
-    const checkoutBtn = document.querySelector('.checkout-btn');
+function setupPaymentListeners() {
+    const radios = document.querySelectorAll('input[name="metodo-pago"]');
+    radios.forEach(radio => {
+        radio.onchange = togglePaymentDetails;
+    });
+}
+
+function togglePaymentDetails() {
+    const metodo = document.querySelector('input[name="metodo-pago"]:checked').value;
+    const cardDetails = document.getElementById('card-details');
+    const pseDetails = document.getElementById('pse-details');
+    
+    if (metodo === 'TARJETA') {
+        cardDetails.style.display = 'block';
+        pseDetails.style.display = 'none';
+    } else if (metodo === 'PSE') {
+        cardDetails.style.display = 'none';
+        pseDetails.style.display = 'block';
+    } else {
+        cardDetails.style.display = 'none';
+        pseDetails.style.display = 'none';
+    }
+}
+
+function cerrarCheckout() {
+    document.getElementById('checkout-modal').classList.remove('open');
+}
+
+function cancelarCompra() {
+    if (confirm('¿Estás seguro de que deseas cancelar la compra? Se vaciará tu carrito.')) {
+        carrito = [];
+        actualizarCarrito();
+        cerrarCheckout();
+        showToast('Compra cancelada y carrito vaciado', 'error');
+    }
+}
+
+// Checkout
+async function realizarCompra(event) {
+    if (event) event.preventDefault();
+
+    const checkoutBtn = document.getElementById('btn-confirmar-pago');
     checkoutBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Procesando...';
     checkoutBtn.disabled = true;
 
+    let metodoPago = document.querySelector('input[name="metodo-pago"]:checked').value;
+    const direccion = document.getElementById('envio-direccion').value;
+
+    if (metodoPago === 'PSE') {
+        const banco = document.getElementById('banco-select').value;
+        if (!banco) {
+            showToast('Por favor selecciona un banco', 'error');
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerHTML = 'Confirmar y Pagar';
+            return;
+        }
+        metodoPago = `PSE - ${banco.toUpperCase()}`;
+    }
+
     const payload = {
-        items: carrito.map(i => ({ productoId: i.productoId, cantidad: i.cantidad }))
+        items: carrito.map(i => ({ productoId: i.productoId, cantidad: i.cantidad })),
+        clienteNombre: sessionStorage.getItem('userName') || 'Invitado',
+        clienteEmail: sessionStorage.getItem('userEmail') || 'Sin correo',
+        metodoPago: metodoPago,
+        direccionEnvio: direccion
     };
 
     try {
@@ -324,10 +482,10 @@ async function realizarCompra() {
         });
 
         if (response.ok) {
-            showToast('¡Compra procesada exitosamente!', 'success');
+            showToast('¡Compra realizada con éxito!', 'success');
             carrito = [];
             actualizarCarrito();
-            toggleCart();
+            cerrarCheckout();
             cargarProductos(); // Reload stock
         } else {
             const err = await response.text();
@@ -336,15 +494,9 @@ async function realizarCompra() {
     } catch (error) {
         showToast('Error de conexión con el servidor', 'error');
     } finally {
-        checkoutBtn.innerHTML = 'Procesar Pago <i class="fas fa-arrow-right"></i>';
+        checkoutBtn.innerHTML = 'Confirmar y Pagar';
         checkoutBtn.disabled = false;
     }
-}
-
-// UI Helpers
-function toggleCart() {
-    cartSidebar.classList.toggle('open');
-    overlay.classList.toggle('open');
 }
 
 function showToast(message, type = 'success') {
