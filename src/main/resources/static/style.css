@@ -1,26 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 :root {
-    --primary: #d32f2f; /* Un rojo institucional tipo Panamericana/Tauro */
-    --primary-hover: #b71c1c;
-    --secondary: #1976d2;
-    --bg: #f4f6f8;
-    --surface: #ffffff;
-    --text-main: #212121;
-    --text-muted: #757575;
-    --border: #e0e0e0;
-    --success: #2e7d32;
-    --danger: #c62828;
-    --warning: #f57c00;
+    --primary: #ef4444; /* Modern Vibrant Red */
+    --primary-hover: #dc2626;
+    --secondary: #3b82f6; /* Modern Blue */
+    --bg: #f8fafc; /* Crisp light background */
+    --surface: rgba(255, 255, 255, 0.85); /* Glassmorphism base */
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
 }
 
 body.dark-mode {
-    --bg: #121212;
-    --surface: #1e1e1e;
-    --text-main: #f0f0f0;
-    --text-muted: #a0a0a0;
-    --border: #333333;
-    --primary: #ff5252;
-    --primary-hover: #ff1744;
-    --secondary: #64b5f6;
+    --bg: #0f172a; /* Deep modern dark blue/gray */
+    --surface: rgba(30, 41, 59, 0.85); /* Glassmorphism dark base */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --primary: #f87171;
+    --primary-hover: #ef4444;
+    --secondary: #38bdf8;
 }
 
 body.dark-mode .top-bar {
@@ -80,7 +82,7 @@ body.dark-mode .newsletter-form input {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -347,14 +349,14 @@ body.dark-mode .theme-toggle {
 
 /* Hero Banner */
 .hero-banner {
-    background: linear-gradient(135deg, var(--secondary) 0%, #0d47a1 100%);
-    border-radius: 8px;
-    padding: 3rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%);
+    border-radius: 16px;
+    padding: 4rem;
     color: white;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     display: flex;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -875,4 +877,41 @@ body.dark-mode .theme-toggle {
     padding: 3rem;
     color: var(--primary);
     font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: space-around;
+    }
+    .store-layout {
+        grid-template-columns: 1fr;
+    }
+    .top-bar-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    .top-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .top-links a {
+        margin-left: 0;
+    }
+    .hero-banner {
+        padding: 2rem;
+        text-align: center;
+    }
+    .hero-banner::after {
+        display: none;
+    }
+    .search-bar {
+        width: 100%;
+    }
 }

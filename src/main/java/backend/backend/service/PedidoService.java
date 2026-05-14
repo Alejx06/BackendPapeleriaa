@@ -79,9 +79,10 @@ public class PedidoService {
     }
 
     public List<Pedido> obtenerPorFecha(LocalDateTime inicio, LocalDateTime fin) {
-        // Implement logic to filter by date range
         return pedidoRepository.findAll().stream()
-                .filter(p -> p.getFechaPedido().isAfter(inicio) && p.getFechaPedido().isBefore(fin))
+                .filter(p -> p.getFechaPedido() != null
+                        && !p.getFechaPedido().isBefore(inicio)
+                        && !p.getFechaPedido().isAfter(fin))
                 .toList();
     }
 }

@@ -76,10 +76,16 @@ public class ProductoController {
     // DELETE - Eliminar producto
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> eliminar(@PathVariable Long id) {
-        if (productoService.eliminar(id)) {
-            return ResponseEntity.ok(Map.of("mensaje", "Producto eliminado correctamente"));
+        try {
+            if (productoService.eliminar(id)) {
+                return ResponseEntity.ok(Map.of("mensaje", "Producto eliminado correctamente"));
+            }
+            return ResponseEntity.notFound().build();
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "No se puede eliminar porque tiene pedidos asociados. Cámbialo a Inactivo."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Ocurrió un error interno al eliminar."));
         }
-        return ResponseEntity.notFound().build();
     }
 
     // PATCH - Desactivar producto

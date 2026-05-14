@@ -38,10 +38,12 @@ public class ProductoService {
                 .orElse(null);
     }
 
-    // Obtener productos por categoría
+    // Obtener productos por categoría (case-insensitive, ignora espacios al final)
     public List<ProductoDTO> obtenerPorCategoria(String categoria) {
-        return productoRepository.findByCategoria(categoria)
-                .stream()
+        String normalizada = categoria.trim().toLowerCase();
+        return productoRepository.findAll().stream()
+                .filter(p -> p.getCategoria() != null &&
+                             p.getCategoria().trim().toLowerCase().equals(normalizada))
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

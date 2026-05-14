@@ -7,6 +7,8 @@
     <title>SHALOM PAPELERIA | Tu papelería de confianza</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
     <link rel="stylesheet" href="style.css">
     <style>
         .modal {
@@ -76,7 +78,8 @@
             <div class="top-links">
                 <a href="#"><i class="fas fa-map-marker-alt"></i> Calle 51 #27-27</a>
                 <a href="#"><i class="fas fa-phone-alt"></i> 3043695254</a>
-                <a href="mailto:contacto@premium.com"><i class="fas fa-envelope"></i> contacto@tauropremium.com</a>
+                <a href="mailto:contacto@shalompapeleria.com"><i class="fas fa-envelope"></i>
+                    contacto@shalompapeleria.com</a>
             </div>
         </div>
     </div>
@@ -89,23 +92,24 @@
             </div>
 
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="¿Qué estás buscando hoy? (Ej: Cuadernos, Lápices...)">
+                <input type="text" id="search-input" placeholder="¿Qué estás buscando hoy? (Ej: Cuadernos, Lápices...)"
+                    autocomplete="off">
                 <button onclick="buscarProductos()"><i class="fas fa-search"></i></button>
             </div>
 
             <div class="header-actions">
                 <div class="action-item" id="user-info-section" onclick="window.location.href='login.html'">
-                    <i class="fas fa-user-shield text-primary"></i>
+                    <i class="fas fa-user text-primary"></i>
                     <div class="action-text">
-                        <span id="user-status">Hola, Admin</span>
+                        <span id="user-status">Soy Cliente</span>
                         <strong id="user-action">Iniciar Sesión</strong>
                     </div>
                 </div>
-                <div class="action-item" id="register-section" onclick="window.location.href='register.html'">
-                    <i class="fas fa-user-plus text-primary"></i>
+                <div class="action-item" id="admin-login-section" onclick="window.location.href='login.html'">
+                    <i class="fas fa-user-shield text-primary"></i>
                     <div class="action-text">
-                        <span>Nuevo aquí?</span>
-                        <strong>Registrarse</strong>
+                        <span>Administración</span>
+                        <strong>Acceso Admin</strong>
                     </div>
                 </div>
                 <div class="action-item cart-icon" onclick="toggleCart()">
@@ -203,7 +207,8 @@
                 <ul>
                     <li style="margin-bottom: 0.75rem;"><i class="fas fa-map-marker-alt"></i> Calle 51 #27-27</li>
                     <li style="margin-bottom: 0.75rem;"><i class="fas fa-phone-alt"></i> 3043695254</li>
-                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-envelope"></i> contacto@tauropremium.com</li>
+                    <li style="margin-bottom: 0.75rem;"><i class="fas fa-envelope"></i> contacto@shalompapeleria.com
+                    </li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -243,7 +248,7 @@
         <div class="modal-content" style="max-width: 500px; padding: 2rem;">
             <div class="modal-header"
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2 style="margin: 0;"><i class="fas fa-check-circle text-primary"></i> Finalizar Compra</h2>
+                <h2 style="margin: 0;"><i class="fas fa-shopping-bag text-primary"></i> Finalizar Compra</h2>
                 <button class="close-btn" onclick="cerrarCheckout()"
                     style="background: none; border: none; font-size: 1.5rem; cursor: pointer;"><i
                         class="fas fa-times"></i></button>
